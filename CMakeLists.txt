@@ -20,6 +20,10 @@ add_executable(TruckersMPLauncherUnofficial
         src/utils/FileUtils.cpp
         src/launcher/Launcher.h
         src/launcher/Launcher.cpp
+        src/utils/ErrorHandling.h
+        src/utils/NetworkingUtils.h
+        src/utils/NetworkingUtils.h
+        src/utils/NetworkingUtils.cpp
 )
 
 include_directories(${Boost_INCLUDE_DIRS})

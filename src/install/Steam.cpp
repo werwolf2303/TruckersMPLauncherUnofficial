@@ -96,10 +96,10 @@ std::string Steam::getATSInstallPath(std::string steamPath) {
 
 std::string Steam::getETS2PrefixPath(std::string steamPath) {
     std::string prefixPath;
-    prefixPath.append(steamPath).append("/steamapps/compatdata/270880/pfx/drive_c");
+    prefixPath.append(steamPath).append("/steamapps/compatdata/227300/pfx/drive_c");
 
     if(!FileUtils::pathExists(prefixPath)) {
-        QMessageBox::critical(nullptr, "Critical", "Couldn't find proton prefix for ATS");
+        QMessageBox::critical(nullptr, "Critical", "Couldn't find proton prefix for ETS2");
         exit(-1);
     }
 
@@ -108,10 +108,10 @@ std::string Steam::getETS2PrefixPath(std::string steamPath) {
 
 std::string Steam::getATSPrefixPath(std::string steamPath) {
     std::string prefixPath;
-    prefixPath.append(steamPath).append("/steamapps/compatdata/227300/pfx/drive_c");
+    prefixPath.append(steamPath).append("/steamapps/compatdata/270880/pfx/drive_c");
 
     if(!FileUtils::pathExists(prefixPath)) {
-        QMessageBox::critical(nullptr, "Critical", "Couldn't find proton prefix for ETS2");
+        QMessageBox::critical(nullptr, "Critical", "Couldn't find proton prefix for ATS");
         exit(-1);
     }
 

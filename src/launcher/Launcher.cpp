@@ -4,11 +4,16 @@
 
 #include "Launcher.h"
 
+#include <iostream>
 #include <QMessageBox>
 
 #include "../utils/FileUtils.h"
 
-void Launcher::checkFoldersAndFiles(std::string prefixPath) {
+void Launcher::checkFoldersAndFiles(std::string prefixPath, std::function<int(int maxProgress, int minProgress, int actualProgress, std::string progressDescription)> onProgress) {
+    int maxProg = 100;
+    int minProg = 0;
+    int nowProg = 0;
+
     std::string truckersMPPath;
     truckersMPPath.append(prefixPath);
     truckersMPPath.append("/users/steamuser/AppData/Local/TruckersMP");
@@ -24,16 +29,14 @@ void Launcher::checkFoldersAndFiles(std::string prefixPath) {
     protonPath.append(truckersMPPath);
     protonPath.append("/GE-Proton-9-6");
 
-    std::string executablePath;
-
     //GE-Proton9-6.zip
     if(!FileUtils::pathExists(protonPath)) {
-        if(!std::filesystem::copy_file(
-            std::filesystem::path();
-        )) {
-            QMessageBox::critical(nullptr, "Critical", "Couldn't copy proton");
-            exit(-1);
-        }
+        //if(!std::filesystem::copy_file(
+        //    std::filesystem::path();
+        //)) {
+        //    QMessageBox::critical(nullptr, "Critical", "Couldn't copy proton");
+        //    exit(-1);
+        //}
     }
 
 

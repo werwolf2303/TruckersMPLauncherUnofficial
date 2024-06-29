@@ -4,16 +4,17 @@
 
 #ifndef LAUNCHER_H
 #define LAUNCHER_H
+#include <functional>
 #include <string>
 
 
 class Launcher {
 public:
-    void downloadTMPFiles(std::string prefixPath);
-    void verifyFiles(std::string prefixPath);
-    void checkFoldersAndFiles(std::string prefixPath);
-    void downloadProton(std::string prefixPath);
-    void downloadTMPCLI(std::string prefixPath);
+    static void downloadTMPFiles(std::string prefixPath, std::function<int(int maxProgress, int minProgress, int actualProgress, std::string progressDescription)> onProgress = nullptr);
+    static void verifyFiles(std::string prefixPath, std::function<int(int maxProgress, int minProgress, int actualProgress, std::string progressDescription)> onProgress = nullptr);
+    static void checkFoldersAndFiles(std::string prefixPath, std::function<int(int maxProgress, int minProgress, int actualProgress, std::string progressDescription)> onProgress = nullptr);
+    static void downloadProton(std::string prefixPath, std::function<int(int maxProgress, int minProgress, int actualProgress, std::string progressDescription)> onProgress = nullptr);
+    static void downloadTMPCLI(std::string prefixPath, std::function<int(int maxProgress, int minProgress, int actualProgress, std::string progressDescription)> onProgress = nullptr);
 };
 
 
