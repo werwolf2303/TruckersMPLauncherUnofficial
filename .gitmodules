@@ -1,7 +1,12 @@
 [submodule "deps/json"]
 	path = deps/json
 	url = https://github.com/nlohmann/json
-
 [submodule "deps/ValveFileVDF"]
 	path = deps/ValveFileVDF
 	url = https://github.com/TinyTinni/ValveFileVDF
+[submodule "deps/11Zip"]
+	path = deps/11Zip
+	url = https://github.com/Sygmei/11Zip
+[submodule "deps/bin2h"]
+	path = deps/bin2h
+	url = https://github.com/rinthel/bin2h
