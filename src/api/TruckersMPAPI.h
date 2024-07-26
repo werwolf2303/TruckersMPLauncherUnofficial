@@ -15,7 +15,7 @@
 class TruckersMPAPI {
 public:
     static std::string api_url() {
-        return "https://api.TruckersMPAPI.com";
+        return "https://api.truckersmp.com";
     };
     static std::string download_url() {
         return "https://download-new.ets2mp.com";
@@ -92,8 +92,8 @@ public:
             int adminID;
         };
 
-        static Player getPlayer(int id, std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError);
-        static std::vector<PlayerBanEntry> getPlayerBans(int id, std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError);
+        static Player getPlayer(int id);
+        static std::vector<PlayerBanEntry> getPlayerBans(int id);
     };
 
     class Servers {
@@ -123,8 +123,9 @@ public:
             int syncdelay;
         };
 
-        static std::vector<Server> getAllServers(std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError);
-        static int getGameTime(std::function<int(ErrorHandling::ErrorType errorType, std::string)> onErrorr);
+        static std::vector<Server> getAllServers();
+        static std::string getAllServersRaw();
+        static int getGameTime();
     };
 
     enum GameTypes {
@@ -140,12 +141,12 @@ public:
             std::string md5;
         };
 
-        static std::vector<File> getFiles(GameTypes gameType, std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError);
+        static std::vector<File> getFiles(GameTypes gameType);
     };
 
-    static std::string getSupportedGameVersionFor(GameTypes gameType, std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError);
-    static std::string getTruckersMPAPIVersion(std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError);
-    static std::string getTruckersMPAPIStage(std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError);
+    static std::string getSupportedGameVersionFor(GameTypes gameType);
+    static std::string getTruckersMPAPIVersion();
+    static std::string getTruckersMPAPIStage();
 };
 
 #endif //TruckersMPAPI_H

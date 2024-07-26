@@ -12,6 +12,7 @@
 #include <unistd.h>
 
 #include "../../deps/ValveFileVDF/include/vdf_parser.hpp"
+#include "../events/Events.h"
 #include "../utils/FileUtils.h"
 
 std::string Steam::getSteamInstallPath() {
@@ -20,8 +21,7 @@ std::string Steam::getSteamInstallPath() {
     steamPath.append("/.local/share/Steam");
 
     if(!FileUtils::pathExists(std::filesystem::path(steamPath))) {
-        QMessageBox::critical(nullptr, "Critical", "Couldn't find Steam");
-        exit(-1);
+        return "";
     }
 
     return steamPath;
@@ -45,16 +45,14 @@ std::string Steam::getETS2InstallPath(std::string steamPath) {
     }
 
     if(!foundETS2) {
-        QMessageBox::critical(nullptr, "Critical", "Couldn't find ETS2");
-        exit(-1);
+        return "GAME";
     }
 
     std::string prefixPath;
     prefixPath.append(steamPath).append("/steamapps/compatdata/227300/pfx/drive_c");
 
     if(!FileUtils::pathExists(prefixPath)) {
-        QMessageBox::critical(nullptr, "Critical", "Couldn't find proton prefix for ETS2");
-        exit(-1);
+        return "PREFIX";
     }
 
     return ETS2Path;
@@ -79,16 +77,14 @@ std::string Steam::getATSInstallPath(std::string steamPath) {
     }
 
     if(!foundATS) {
-        QMessageBox::critical(nullptr, "Critical", "Couldn't find ATS");
-        exit(-1);
+        return "GAME";
     }
 
     std::string prefixPath;
     prefixPath.append(steamPath).append("/steamapps/compatdata/270880/pfx/drive_c");
 
     if(!FileUtils::pathExists(prefixPath)) {
-        QMessageBox::critical(nullptr, "Critical", "Couldn't find proton prefix for ATS");
-        exit(-1);
+        return "PREFIX";
     }
 
     return ATSPath;
@@ -99,8 +95,7 @@ std::string Steam::getETS2PrefixPath(std::string steamPath) {
     prefixPath.append(steamPath).append("/steamapps/compatdata/227300/pfx/drive_c");
 
     if(!FileUtils::pathExists(prefixPath)) {
-        QMessageBox::critical(nullptr, "Critical", "Couldn't find proton prefix for ETS2");
-        exit(-1);
+        return "";
     }
 
     return prefixPath;
@@ -111,9 +106,55 @@ std::string Steam::getATSPrefixPath(std::string steamPath) {
     prefixPath.append(steamPath).append("/steamapps/compatdata/270880/pfx/drive_c");
 
     if(!FileUtils::pathExists(prefixPath)) {
-        QMessageBox::critical(nullptr, "Critical", "Couldn't find proton prefix for ATS");
-        exit(-1);
+        return "";
     }
 
     return prefixPath;
+}
+
+std::vector<Steam::GameEntry> Steam::getGameList(std::string steamPath) {
+    std::vector<Steam::GameEntry> gameList;
+
+    if(steamPath == "") {
+        Events::trigger(Events::onError, std::tuple<ErrorHandling::ErrorType, std::string>(ErrorHandling::DESCRIPTIVE, "No Steam installation found"));
+        return gameList;
+    }
+
+    std::string atsGamePath;
+    atsGamePath.append(steamPath).append("/steamapps/common/American Truck Simulator");
+
+    if(FileUtils::pathExists(atsGamePath)) {
+        GameEntry entry;
+        if(getATSPrefixPath(steamPath) == "") {
+            entry.name = "American Truck Simulator (No Prefix)";
+            entry.gameType = ATS;
+            entry.selectable = false;
+        }
+        if(getATSPrefixPath(steamPath) != "") {
+            entry.name = "American Truck Simulator)";
+            entry.gameType = ATS;
+            entry.selectable = true;
+        }
+        gameList.push_back(entry);
+    }
+
+    std::string ets2GamePath;
+    ets2GamePath.append(steamPath).append("/steamapps/common/Euro Truck Simulator 2");
+
+    if(FileUtils::pathExists(ets2GamePath)) {
+        GameEntry entry;
+        if(getETS2PrefixPath(steamPath) == "") {
+            entry.name = "Euro Truck Simulator 2 (No Prefix)";
+            entry.gameType = ETS2;
+            entry.selectable = false;
+        }
+        if(getETS2PrefixPath(steamPath) != "") {
+            entry.name = "Euro Truck Simulator 2";
+            entry.gameType = ETS2;
+            entry.selectable = true;
+        }
+        gameList.push_back(entry);
+    }
+
+    return gameList;
 }

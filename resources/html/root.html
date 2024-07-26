@@ -1,0 +1,65 @@
+R"(<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FrontendServer - Root</title>
+  <style>
+    #userInfo {
+      height: 30px;
+      background-color: red;
+      display: flex;
+      align-items: center;
+    }
+    #userInfo h3 {
+      margin: 0;
+      color: black;
+      overflow: scroll;
+      white-space: nowrap;
+      flex: 1;
+      transition: font-size 0.3s ease;
+    }
+    #userInfo img {
+      height: 100%;
+    }
+    #pageBody > div {
+      margin-left: 20px;
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+<div id="userInfo">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Warning.svg/234px-Warning.svg.png"/>
+  <h3 id="warningText">If you are an end user, please report that you see this page!</h3>
+</div>
+<br>
+<div id="pageBody">
+  <h2>Available pages:</h2>
+  <div>
+    <a href="/community" target="_blank">[Community]</a>
+    <a>Inspect page via right click</a>
+  </div>
+  <div>
+    <a href="/events" target="_blank">[Events]</a>
+    <a>Inspect page via right click</a>
+  </div>
+  <div>
+    <a href="/serverstatus" target="_blank">[Server Status]</a>
+    <a>Inspect page via right click</a>
+  </div>
+  <div>
+    <a href="/versions" target="_blank">[Versions]</a>
+    <a>Inspect page via right click</a>
+  </div>
+  <div>
+    <a href="/settings" target="_blank">[Settings]</a>
+    <a>Inspect page via right click</a>
+  </div>
+</div>
+</body>
+</html>
+)"

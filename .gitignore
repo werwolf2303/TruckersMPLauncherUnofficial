@@ -1,2 +1,6 @@
 cmake-build-debug/
-
+cmake-build-debug-html/
+frontend/node_modules/
+frontend/deps/EmbeddedImports/node_modules/
+src/images/TMPLogo.h
+cmake-build-release/

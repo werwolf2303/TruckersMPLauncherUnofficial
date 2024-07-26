@@ -11,6 +11,7 @@ class FileUtils {
 public:
     static std::string calculateMD5(std::filesystem::path filePath);
     static bool pathExists(const std::filesystem::path& p, std::filesystem::file_status s = std::filesystem::file_status{});
+    static std::string file_contents(const std::filesystem::path& path);
 };
 
 

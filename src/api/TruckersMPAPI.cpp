@@ -8,13 +8,14 @@
 #include <QCoreApplication>
 #include <nlohmann/json.hpp>
 
+#include "../events/Events.h"
 #include "../utils/ErrorHandling.h"
 #include "../utils/NetworkingUtils.h"
 
 
-std::vector<TruckersMPAPI::Servers::Server> TruckersMPAPI::Servers::getAllServers(std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError = nullptr) {
+std::vector<TruckersMPAPI::Servers::Server> TruckersMPAPI::Servers::getAllServers() {
     try {
-        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::API, "/servers", onError)).toStdString());
+        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::API, "/v2/servers")).toStdString());
         std::vector<TruckersMPAPI::Servers::Server> servers;
         for (auto &el: json["response"].items()) {
             nlohmann::json serverJson = el.value();
@@ -44,27 +45,37 @@ std::vector<TruckersMPAPI::Servers::Server> TruckersMPAPI::Servers::getAllServer
         }
         return servers;
     }catch (...) {
-        if(onError != nullptr) onError(ErrorHandling::GENERIC, "Exception thrown");
+        Events::trigger(Events::onError, std::tuple<ErrorHandling::ErrorType, std::string>(ErrorHandling::GENERIC, "Exception thrown"));
         return std::vector<TruckersMPAPI::Servers::Server>();
     }
 }
 
-int TruckersMPAPI::Servers::getGameTime(std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError = nullptr) {
+std::string TruckersMPAPI::Servers::getAllServersRaw() {
     try {
-        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::API, "/game_time", onError)).toStdString());
+        return QString(NetworkingUtils::makeGet(NetworkingUtils::API, "/v2/servers")).toStdString();
+    }catch (...) {
+        Events::trigger(Events::onError, std::tuple<ErrorHandling::ErrorType, std::string>(ErrorHandling::GENERIC, "Exception thrown"));
+        return "";
+    }
+}
+
+
+int TruckersMPAPI::Servers::getGameTime() {
+    try {
+        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::API, "/game_time")).toStdString());
         if (json.count("game_time") != 0) {
             return json["game_time"].get<int>();
         }
         return -1;
     }catch (...) {
-        if(onError != nullptr) onError(ErrorHandling::GENERIC, "Exception thrown");
+        Events::trigger(Events::onError, std::tuple<ErrorHandling::ErrorType, std::string>(ErrorHandling::GENERIC, "Exception thrown"));
         return -1;
     }
 }
 
-TruckersMPAPI::Players::Player TruckersMPAPI::Players::getPlayer(int id, std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError = nullptr) {
+TruckersMPAPI::Players::Player TruckersMPAPI::Players::getPlayer(int id) {
     try {
-        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::API, "/player/" + id, onError)).toStdString());
+        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::API, "/player/" + id)).toStdString());
         nlohmann::json serverJSON = json["response"];
         Player player;
         if (serverJSON.count("id") != 0) player.id = serverJSON["id"].get<int>();
@@ -128,14 +139,14 @@ TruckersMPAPI::Players::Player TruckersMPAPI::Players::getPlayer(int id, std::fu
         }
         return player;
     }catch (...) {
-        if(onError != nullptr) onError(ErrorHandling::GENERIC, "Exception thrown");
+        Events::trigger(Events::onError, std::tuple<ErrorHandling::ErrorType, std::string>(ErrorHandling::GENERIC, "Exception thrown"));
         return Player();
     }
 }
 
-std::vector<TruckersMPAPI::Players::PlayerBanEntry> TruckersMPAPI::Players::getPlayerBans(int id, std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError = nullptr) {
+std::vector<TruckersMPAPI::Players::PlayerBanEntry> TruckersMPAPI::Players::getPlayerBans(int id) {
     try {
-        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::API, "/bans/" + id, onError)).toStdString());
+        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::API, "/bans/" + id)).toStdString());
         std::vector<TruckersMPAPI::Players::PlayerBanEntry> banEntries;
         for(auto &bel : json["response"].items()) {
             nlohmann::json banEntryJSON = bel.value();
@@ -150,48 +161,48 @@ std::vector<TruckersMPAPI::Players::PlayerBanEntry> TruckersMPAPI::Players::getP
         }
         return banEntries;
     }catch(...) {
-        if(onError != nullptr) onError(ErrorHandling::GENERIC, "Exception thrown");
+        Events::trigger(Events::onError, std::tuple<ErrorHandling::ErrorType, std::string>(ErrorHandling::GENERIC, "Exception thrown"));
         return std::vector<PlayerBanEntry>();
     }
 }
 
-std::string TruckersMPAPI::getSupportedGameVersionFor(GameTypes gameType, std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError = nullptr) {
+std::string TruckersMPAPI::getSupportedGameVersionFor(GameTypes gameType) {
     try {
-        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::API, "/v2/version", onError)).toStdString());
+        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::API, "/v2/version")).toStdString());
         if(gameType == ETS2) {
             return json["supported_game_version"].get<std::string>();
         }
         return json["supported_ats_game_version"].get<std::string>();
     }catch (...) {
-        if(onError != nullptr) onError(ErrorHandling::GENERIC, "Exception thrown");
+        Events::trigger(Events::onError, std::tuple<ErrorHandling::ErrorType, std::string>(ErrorHandling::GENERIC, "Exception thrown"));
         return nullptr;
     }
 }
 
-std::string TruckersMPAPI::getTruckersMPAPIVersion(std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError) {
+std::string TruckersMPAPI::getTruckersMPAPIVersion() {
     try {
-        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::API, "/v2/version", onError)).toStdString());
+        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::API, "/v2/version")).toStdString());
         return json["name"].get<std::string>();
     }catch (...) {
-        if(onError != nullptr) onError(ErrorHandling::GENERIC, "Exception thrown");
+        Events::trigger(Events::onError, std::tuple<ErrorHandling::ErrorType, std::string>(ErrorHandling::GENERIC, "Exception thrown"));
         return nullptr;
     }
 }
 
-std::string TruckersMPAPI::getTruckersMPAPIStage(std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError) {
+std::string TruckersMPAPI::getTruckersMPAPIStage() {
     try {
-        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::API, "/v2/version", onError)).toStdString());
+        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::API, "/v2/version")).toStdString());
         return json["stage"].get<std::string>();
     }catch (...) {
-        if(onError != nullptr) onError(ErrorHandling::GENERIC, "Exception thrown");
+        Events::trigger(Events::onError, std::tuple<ErrorHandling::ErrorType, std::string>(ErrorHandling::GENERIC, "Exception thrown"));
         return nullptr;
     }
 }
 
-std::vector<TruckersMPAPI::Files::File> TruckersMPAPI::Files::getFiles(GameTypes gameType, std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError = nullptr) {
+std::vector<TruckersMPAPI::Files::File> TruckersMPAPI::Files::getFiles(GameTypes gameType) {
     try {
         std::vector<File> files;
-        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::UPDATE, "/files.json", onError)).toStdString());
+        nlohmann::json json = nlohmann::json::parse(QString(NetworkingUtils::makeGet(NetworkingUtils::UPDATE, "/files.json")).toStdString());
         for(auto fileJSON : json["Files"].items()) {
             File file;
             if(fileJSON.value()["Type"] != "system") {
@@ -211,7 +222,7 @@ std::vector<TruckersMPAPI::Files::File> TruckersMPAPI::Files::getFiles(GameTypes
         }
         return files;
     }catch (...) {
-        if(onError != nullptr) onError(ErrorHandling::GENERIC, "Exception thrown");
+        Events::trigger(Events::onError, std::tuple<ErrorHandling::ErrorType, std::string>(ErrorHandling::GENERIC, "Exception thrown"));
         return std::vector<File>();
     }
 }

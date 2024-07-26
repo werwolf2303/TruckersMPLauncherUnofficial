@@ -7,14 +7,17 @@
 #include <functional>
 #include <string>
 
+#include "../api/TruckersMPAPI.h"
+#include "../utils/ErrorHandling.h"
 
 class Launcher {
 public:
-    static void downloadTMPFiles(std::string prefixPath, std::function<int(int maxProgress, int minProgress, int actualProgress, std::string progressDescription)> onProgress = nullptr);
-    static void verifyFiles(std::string prefixPath, std::function<int(int maxProgress, int minProgress, int actualProgress, std::string progressDescription)> onProgress = nullptr);
-    static void checkFoldersAndFiles(std::string prefixPath, std::function<int(int maxProgress, int minProgress, int actualProgress, std::string progressDescription)> onProgress = nullptr);
-    static void downloadProton(std::string prefixPath, std::function<int(int maxProgress, int minProgress, int actualProgress, std::string progressDescription)> onProgress = nullptr);
-    static void downloadTMPCLI(std::string prefixPath, std::function<int(int maxProgress, int minProgress, int actualProgress, std::string progressDescription)> onProgress = nullptr);
+    static bool downloadTMPFiles(std::string prefixPath,
+        TruckersMPAPI::GameTypes gameType);
+    static bool verifyTMPFiles(std::string prefixPath,
+        TruckersMPAPI::GameTypes gameType);
+    static bool checkFoldersAndFiles(std::string prefixPath);
+    static bool injectTruckersMP(std::string prefixPath, std::string gamePath, char *argv[]);
 };
 
 

@@ -15,12 +15,14 @@ public:
     enum Endpoints  {
         API,
         DOWNLOAD,
-        UPDATE
+        UPDATE,
+        CUSTOM,
+        GITHUB
     };
 
-    static QByteArray makeGet(Endpoints server, const std::string& path, std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError);
-    static bool download(Endpoints server, const std::string& path, std::string downloadTo, std::function<int(ErrorHandling::ErrorType errorType, std::string)> onError,
-        std::function<int(int maxProgress, int minProgress, int actualProgress, std::string progressDescription, std::string downloadSpeed)> onProgress = nullptr);
+    static QByteArray makeGet(Endpoints server, std::string path);
+    static std::string getLocation(std::string path);
+    static bool download(Endpoints server, const std::string& path, std::string downloadTo);
 };
 
 
