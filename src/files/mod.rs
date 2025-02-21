@@ -1,0 +1,1 @@
+pub mod truckersmp_cli;

@@ -1,1 +1,0 @@
-Taken from https://sourceforge.net/projects/libb64/
