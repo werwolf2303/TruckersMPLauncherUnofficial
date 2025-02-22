@@ -135,17 +135,17 @@ use std::time::Instant;
 pub struct Downloader {
     client: Client,
     files_to_download: Vec<(String, String)>,
-    downloads_finished_callback: Box<dyn Fn(bool) + Send + Sync>,
-    download_item_finished_callback: Box<dyn Fn(u64, u64) + Send + Sync>,
-    progress_callback: Box<dyn Fn(f64, u64, u64) + Send + Sync>,
+    downloads_finished_callback: Box<dyn FnMut(bool) + 'static>,
+    download_item_finished_callback: Box<dyn FnMut(u64, u64) + 'static>,
+    progress_callback: Box<dyn FnMut(f64, u64, u64) + 'static>,
 }
 
 impl Downloader {
     pub fn new<F, G, T>(callback_finished: F, callback_item: G, callback_progress: T) -> Self
     where
-        F: Fn(bool) + Send + Sync + 'static,
-        G: Fn(u64, u64) + Send + Sync + 'static,
-        T: Fn(f64, u64, u64) + Send + Sync + 'static
+        F: FnMut(bool) + 'static,
+        G: FnMut(u64, u64) + 'static,
+        T: FnMut(f64, u64, u64) + 'static,
     {
         Downloader {
             client: Client::new(),
@@ -164,9 +164,9 @@ impl Downloader {
         let mut all_successful = true;
         let total_files = self.files_to_download.len() as u64;
         let mut current_mut = 0;
-        let downloads_finished_callback = self.downloads_finished_callback;
-        let download_item_finished_callback = self.download_item_finished_callback;
-        let progress_callback = self.progress_callback;
+        let mut downloads_finished_callback = self.downloads_finished_callback;
+        let mut download_item_finished_callback = self.download_item_finished_callback;
+        let mut progress_callback = self.progress_callback;
 
         for (url, output_path) in self.files_to_download {
             current_mut += 1;
@@ -175,7 +175,7 @@ impl Downloader {
                 &self.client,
                 url,
                 output_path,
-                &progress_callback,
+                &mut progress_callback,
             ).await;
 
             download_item_finished_callback(current, total_files);
@@ -192,7 +192,7 @@ impl Downloader {
         client: &Client,
         url: String,
         output_path: String,
-        progress_callback: &Box<dyn Fn(f64, u64, u64) + Send + Sync>,
+        progress_callback: &mut Box<dyn FnMut(f64, u64, u64) + 'static>,
     ) -> Result<(), Error> {
         let response = client.get(url).send().await?;
         let total_size = response.content_length().unwrap_or(0);

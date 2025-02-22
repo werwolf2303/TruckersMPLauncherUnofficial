@@ -127,9 +127,9 @@ pub async fn download<F, G, T>(
     files_to_download: Vec<PathBuf>
 )
 where
-    F: Fn(bool) + Send + 'static + Sync,
-    G: Fn(u64, u64) + Send + 'static + Sync,
-    T: Fn(f64, u64, u64) + Send + 'static + Sync,
+    F: FnMut(bool) + 'static,
+    G: FnMut(u64, u64) + 'static,
+    T: FnMut(f64, u64, u64) + 'static,
 {
     let mut download: Downloader = Downloader::new(
         callback_finished,
@@ -152,7 +152,7 @@ where
                     ErrorDialog::new(
                         "Fatal error".to_string(),
                         format!("Error: {}", error.to_string())
-                    ).open().expect("Failed to show error dialog");
+                    ).open().expect("Failed to open error dialog");
                     eprintln!("Failed to create directory: {:?}", error);
                     exit(-1)
                 }
@@ -181,7 +181,7 @@ where
         ErrorDialog::new(
             "Fatal error".to_string(),
             format!("Error: {}", error.to_string())
-        ).open().expect("Failed to show error dialog");
+        ).open().expect("Failed to open error dialog");
         eprintln!("Failed to download files: {:?}", error);
         exit(-1)
     }
@@ -215,7 +215,7 @@ pub fn verify(
             ErrorDialog::new(
                 "Fatal error".to_string(),
                 format!("Error: {}", error.to_string())
-            ).open().expect("Failed to show error dialog");
+            ).open().expect("Failed to open error dialog");
             eprintln!("Failed to create truckersmp directory: {:?}", error);
             exit(-1)
         }
@@ -268,7 +268,7 @@ pub fn get_home_directory() -> PathBuf {
         ErrorDialog::new(
             "Fatal error".to_string(),
             "Couldn't find home directory".to_string()
-        ).open().expect("Failed to show error dialog");
+        ).open().expect("Failed to open error dialog");
         eprintln!("Couldn't find home directory");
         exit(0);
     }

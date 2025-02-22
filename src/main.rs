@@ -13,13 +13,13 @@ use serde_json::error::Category::Syntax;
 use std::any::{Any, TypeId};
 use std::collections::BTreeMap;
 use std::ops::{Deref, RangeInclusive};
-use std::panic;
+use std::{panic, thread};
 use std::path::{Path, PathBuf};
 use std::process::exit;
+use std::sync::{Arc, Mutex};
 use egui::Slider;
 use egui::WidgetType::Button;
 use crate::ui::main::MainWindow;
-use crate::ui::window::Window;
 
 pub mod launcher;
 pub mod public_values;
@@ -62,7 +62,7 @@ fn main() {
         ErrorDialog::new(
             "Fatal error".to_string(),
             "Unknown operating system".to_string()
-        ).open().expect("Failed to show error dialog");
+        ).open().expect("Failed to open error dialog");
         eprintln!("Unknown operating system");
         exit(-1);
     }
@@ -90,5 +90,5 @@ fn main() {
         eprintln!("{}", panic_info);
     }));
 
-    MainWindow::open(games);
+    MainWindow::default().set_games(games).open().expect("Failed to open main window");
 }

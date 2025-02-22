@@ -27,7 +27,7 @@ pub async fn get_files() -> Result<Vec<File>, Error> {
         ErrorDialog::new(
             "Fatal error".to_string(),
             format!("Error: {}", error.to_string())
-        ).open().expect("Failed to show error dialog");
+        ).open().expect("Failed to open error dialog");
         eprintln!("Failed to get files: {:?}", error);
         exit(-1)
     }

@@ -43,7 +43,7 @@ impl Game for ETS2 {
                 ErrorDialog::new(
                     "Fatal error".to_string(),
                     "Unsupported operating system".to_string()
-                ).open().expect("Failed to show error dialog");
+                ).open().expect("Failed to open error dialog");
                 eprintln!("Unsupported operating system");
                 exit(-1)
             },

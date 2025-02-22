@@ -35,7 +35,7 @@ pub fn get_library_folders(operating_system: &OperatingSystems) -> LibraryFolder
         ErrorDialog::new(
             "Fatal error".to_string(),
             format!("Error: {}", error.to_string())
-        ).open().expect("Failed to show error dialog");
+        ).open().expect("Failed to open error dialog");
         eprintln!("Error: {}", error.to_string());
         exit(-1);
     }
@@ -46,7 +46,7 @@ pub fn get_library_folders(operating_system: &OperatingSystems) -> LibraryFolder
         ErrorDialog::new(
             "Fatal error".to_string(),
             format!("Error: {}", error.to_string())
-        ).open().expect("Failed to show error dialog");
+        ).open().expect("Failed to open error dialog");
         eprintln!("Error: {}", error.to_string());
         exit(-1);
     }
@@ -56,7 +56,7 @@ pub fn get_library_folders(operating_system: &OperatingSystems) -> LibraryFolder
         ErrorDialog::new(
             "Fatal error".to_string(),
             "Unknown error in line 54 in vdf.rs".to_string()
-        ).open().expect("Failed to show error dialog");
+        ).open().expect("Failed to open error dialog");
         eprintln!("Unknown error in line 54 in vdf.rs");
         exit(-1);
     }
@@ -78,7 +78,7 @@ pub fn get_library_folders(operating_system: &OperatingSystems) -> LibraryFolder
         ErrorDialog::new(
             "Fatal error".to_string(),
             format!("Error: {}", error.to_string())
-        ).open().expect("Failed to show error dialog");
+        ).open().expect("Failed to open error dialog");
         eprintln!("Error: {}", error.to_string());
         exit(-1);
     }
